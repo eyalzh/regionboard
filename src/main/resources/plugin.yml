@@ -1,0 +1,10 @@
+name: RegionBoard
+main: org.samson.bukkit.plugins.regionboard.RegionBoardPlugin
+version: ${project.version}
+
+depend: [WorldGuard]
+
+commands:
+   regionboard:
+      description: RegionBoard Admin Command
+      usage: /<command> 

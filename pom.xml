@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.samson.bukkit.plugins.regionboard</groupId>
+	<artifactId>RegionBoard</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>RegionBoard</name>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>1.7.9-R0.2</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+		
+		<dependency>
+		    <groupId>org.mapdb</groupId>
+            <artifactId>mapdb</artifactId>
+            <version>1.0.3</version>
+            <scope>compile</scope>
+        </dependency>
+		
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldguard</artifactId>
+            <type>jar</type>
+            <version>5.7.3</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commandbook</artifactId>
+                    <groupId>com.sk89q</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>iconomy</artifactId>
+                    <groupId>com.nijikokun</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>prtree</artifactId>
+                    <groupId>org.khelekore</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>opencsv</artifactId>
+                    <groupId>net.sf.opencsv</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency> 		
+		
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+						
+			<plugin>
+			    <artifactId>maven-assembly-plugin</artifactId>
+			    <version>2.2.1</version>
+			    <configuration>
+			        <descriptorRefs>
+			            <descriptorRef>jar-with-dependencies</descriptorRef>
+			        </descriptorRefs>
+			    </configuration>
+			    <executions>
+			        <execution>
+			            <id>make-assembly</id> 
+			            <phase>package</phase>
+			            <goals>
+			                <goal>single</goal>
+			            </goals>
+			        </execution>
+			    </executions>
+			</plugin>			
+						
+		</plugins>
+		
+        <resources>
+          <resource>
+            <filtering>true</filtering>
+            <directory>src/main/resources</directory>
+          </resource>
+        </resources>    		
+		
+	</build>
+	
+	<repositories>
+		<repository>
+			<id>bukkit-repo</id>
+			<url>http://repo.bukkit.org/content/groups/public</url>
+		</repository>
+        <repository>
+          <id>sk89q-repo</id>
+          <url>http://maven.sk89q.com/repo/</url>
+        </repository>
+	</repositories>
+</project>
