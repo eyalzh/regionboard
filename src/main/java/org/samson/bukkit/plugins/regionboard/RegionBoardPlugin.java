@@ -17,26 +17,6 @@ import org.samson.bukkit.plugins.regionboard.region.WorldGuardRegionMap;
 import org.samson.bukkit.plugins.regionboard.scoreboard.ScoreboardController;
 import org.samson.bukkit.plugins.regionboard.util.BukkitCommandLoader;
 
-	
-//TODO
-
-// Add command to add region:
-//	Commands with annotations?
-//		Annotation on class should basically execute getCommand("xyz").setExecutor(commandExecutor);
-//      Annotation on method should filter by sub-command...
-
-// Add display name support to region-map (it's "TBD" now)
-
-// Add score persistence (every 5 seconds, or when server is reloading...)
-//  Use mapDB...
-
-//remove debug messages
-// Tests (add unit tests where it makes sense)
-
-
-// Known Bugs:
-// When joining into the region, the board does not update... (add OnJoinPlayer event)
-
 public class RegionBoardPlugin extends JavaPlugin {
 	
 	private WorldGuardRegionMap regionMap;
