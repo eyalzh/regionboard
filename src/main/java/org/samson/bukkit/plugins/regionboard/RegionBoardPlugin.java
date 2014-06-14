@@ -8,20 +8,36 @@ import java.util.Set;
 import org.bukkit.Statistic;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.samson.bukkit.plugins.regionboard.command.RegionBoardCommandExecutor;
 import org.samson.bukkit.plugins.regionboard.db.DBService;
 import org.samson.bukkit.plugins.regionboard.db.MapDBService;
+import org.samson.bukkit.plugins.regionboard.event.RegionBoardEventListener;
 import org.samson.bukkit.plugins.regionboard.monitor.PlayerPositionMonitor;
 import org.samson.bukkit.plugins.regionboard.region.WorldGuardRegionMap;
+import org.samson.bukkit.plugins.regionboard.scoreboard.ScoreboardController;
+import org.samson.bukkit.plugins.regionboard.util.BukkitCommandLoader;
+
 	
+//TODO
+
+// Add command to add region:
+//	Commands with annotations?
+//		Annotation on class should basically execute getCommand("xyz").setExecutor(commandExecutor);
+//      Annotation on method should filter by sub-command...
+
+// Add display name support to region-map (it's "TBD" now)
+
+// Add score persistence (every 5 seconds, or when server is reloading...)
+//  Use mapDB...
+
+//remove debug messages
+// Tests (add unit tests where it makes sense)
+
+
+// Known Bugs:
+// When joining into the region, the board does not update... (add OnJoinPlayer event)
 
 public class RegionBoardPlugin extends JavaPlugin {
-
-	private final RegionBoardCommandExecutor commandExecutor = new RegionBoardCommandExecutor(this);
-	private final RegionBoardEventListener eventListener = new RegionBoardEventListener(this);
-
-	private final ScoreboardController scoreboardController = new ScoreboardController();
-	
-	private final PlayerPositionMonitor playerPositionMonitor = new PlayerPositionMonitor(this);
 	
 	private WorldGuardRegionMap regionMap;
 	private DBService regionsDB;
@@ -45,6 +61,10 @@ public class RegionBoardPlugin extends JavaPlugin {
 		STATS_TRACKED = Collections.unmodifiableSet(statsTrackedInit);
 	}	
 	
+	private final RegionBoardEventListener eventListener = new RegionBoardEventListener(this);
+	private final ScoreboardController scoreboardController = new ScoreboardController();
+	private final PlayerPositionMonitor playerPositionMonitor = new PlayerPositionMonitor(this);	
+	
 	public void onDisable() {
 		
 		playerPositionMonitor.stop();
@@ -60,7 +80,7 @@ public class RegionBoardPlugin extends JavaPlugin {
 		regionsDB = new MapDBService(new File(getDataFolder(), "regions.db"));
 		regionMap = new WorldGuardRegionMap(regionsDB);
 		
-		getCommand("regionboard").setExecutor(commandExecutor);
+		BukkitCommandLoader.loadCommands(this, RegionBoardCommandExecutor.class);
 		
 		PluginManager pm = this.getServer().getPluginManager();
 		pm.registerEvents(eventListener, this);
