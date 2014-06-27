@@ -43,7 +43,7 @@ public class WorldGuardRegionTest {
 	}
 	
 	@Test
-	public void StatisticsRegionId_MatchEventWithoutSub_ReturnTrue() {
+	public void Region_MatchEventWithoutSub_ReturnTrue() {
 		
 		WorldGuardRegion region = new WorldGuardRegion("test-region", "TREASURE_FISHED", null, "Display");
 
@@ -55,7 +55,7 @@ public class WorldGuardRegionTest {
 	}
 
 	@Test
-	public void StatisticsRegionId_MatchEventWithSub_ReturnTrue() {
+	public void Region_MatchEventWithSub_ReturnTrue() {
 		
 		WorldGuardRegion region = new WorldGuardRegion("test-region", "MINE_BLOCK", "STONE", "Display");
 
@@ -68,7 +68,7 @@ public class WorldGuardRegionTest {
 	}	
 	
 	@Test
-	public void StatisticsRegionId_Get_ReturnedCorrectly() {
+	public void RegionId_Get_ReturnedCorrectly() {
 		
 		WorldGuardRegion region = new WorldGuardRegion("test-region", "TREASURE_FISHED", null, "Display");
 		
