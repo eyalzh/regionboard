@@ -2,6 +2,7 @@ package org.samson.bukkit.plugins.regionboard.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +29,6 @@ public abstract class CommandExecutorBase implements CommandExecutor {
 		for (Method method : methods) {
 			if (method.isAnnotationPresent(SubCommand.class)) {
 				
-				plugin.getLogger().info("DEBUG - found sub command annotation on method " + method.getName());
-				
 				SubCommand annotation = method.getAnnotation(SubCommand.class);
 				subCommandsMap.put(annotation.subCommand().toLowerCase(), method);
 			}
@@ -43,13 +42,12 @@ public abstract class CommandExecutorBase implements CommandExecutor {
     	if (args.length > 0) {
     		
     		String subCommand = args[0].toLowerCase();
-
-    		plugin.getLogger().info("DEBUG: found sub-command " + subCommand);
     		
     		if (subCommandsMap.containsKey(subCommand)) {
     			Method method = subCommandsMap.get(subCommand);
     			try {
-					method.invoke(this, sender, args);
+    				String[] subCommandArgs = Arrays.copyOfRange(args, 1, args.length);
+					method.invoke(this, sender, subCommandArgs);
 					return true;
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();

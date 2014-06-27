@@ -29,8 +29,6 @@ public class RegionBoardEventListener implements Listener {
 
 	@EventHandler
 	public void onPlayerEntersRegion(PlayerEntersRegion event) {
-	
-		plugin.getLogger().info("Debug: called onPlayerEntersRegion with " + event.getRegion());
 		
 		Region region = event.getRegion();
 		Player player = event.getPlayer();
@@ -42,8 +40,6 @@ public class RegionBoardEventListener implements Listener {
 	
 	@EventHandler
 	public void onPlayerLeavesRegion(PlayerLeavesRegion event) {
-	
-		plugin.getLogger().info("Debug: called onPlayerLeavesRegion with " + event.getRegion());
 
 		Player player = event.getPlayer();
 		
@@ -66,6 +62,10 @@ public class RegionBoardEventListener implements Listener {
 		
 		Player player = event.getPlayer();
 		
+		if (! plugin.getPlayerPositionMonitor().isPlayerInAnyRegion(player)) {
+			return;
+		}
+		
 		List<Region> regions;
 		try {
 			regions = plugin.getRegionMap().getRegionsByLocation(player.getLocation());
@@ -74,9 +74,9 @@ public class RegionBoardEventListener implements Listener {
 			
 				Region firstRegion = regions.get(0);
 				
-				Statistic regionStat = firstRegion.getStatistic();
+				String regionStatName = firstRegion.getStatistic();
 				
-				if (regionStat.equals(stat)) {
+				if (regionStatName.equalsIgnoreCase(stat.name().toLowerCase())) {
 					
 					ScoreboardController scoreboardController = plugin.getScoreboardController();
 					scoreboardController.updateScoreForPlayer(player, firstRegion, event.getNewValue() - event.getPreviousValue());					

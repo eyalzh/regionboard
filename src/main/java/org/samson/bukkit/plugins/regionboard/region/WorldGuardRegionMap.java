@@ -2,9 +2,9 @@ package org.samson.bukkit.plugins.regionboard.region;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Location;
-import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.samson.bukkit.plugins.regionboard.db.DBService;
 
@@ -34,15 +34,15 @@ public class WorldGuardRegionMap implements RegionMap {
 		List<String> wgRegions = getWGRegionsIdsByLocation(playerLocation);
 		
 		for (String wgRegionId : wgRegions) {
-			String statType = dbService.get(wgRegionId);
 			
-			if (statType != null) {
-				
-				Statistic stat = Statistic.valueOf(statType);
-				if (stat != null) {
-					regions.add(new WorldGuardRegion(wgRegionId, stat, "TBD"));
-				}
+			Object regionData = dbService.get(wgRegionId);
+			
+			if (regionData != null) {
+				String[] regionValues = dbService.get(wgRegionId);
+				WorldGuardRegion region = WorldGuardRegion.fromStringValues(regionValues);
+				regions.add(region);
 			}
+
 		}
 		
 		return regions;
@@ -60,7 +60,7 @@ public class WorldGuardRegionMap implements RegionMap {
 	
 	@Override
 	public void addRegion(WorldGuardRegion region) {
-		dbService.set(region.getRegionId(), region.getStatistic().name());
+		dbService.set(region.getRegionId(), region.toStringValues());
 	}
 
 	@Override
@@ -68,6 +68,16 @@ public class WorldGuardRegionMap implements RegionMap {
 		Location playerLocation = player.getLocation();
 		List<String> wgRegions = getWGRegionsIdsByLocation(playerLocation);
 		return wgRegions.contains(lastKnownRegion.getRegionId());
+	}
+
+	@Override
+	public Set<String> getAllRegions() {
+		return dbService.getAll();
+	}
+
+	@Override
+	public void removeAll() {
+		dbService.clean();
 	}
 
 }

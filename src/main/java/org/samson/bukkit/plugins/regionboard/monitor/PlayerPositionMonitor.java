@@ -20,7 +20,7 @@ import org.samson.bukkit.plugins.regionboard.region.RegionMap;
  */
 public class PlayerPositionMonitor {
 	
-	private static final int JOB_INTERVAL_TICKS = 40;
+	private static final int JOB_INTERVAL_TICKS = 20;
 
 	private final RegionBoardPlugin plugin;
 	
@@ -48,6 +48,14 @@ public class PlayerPositionMonitor {
 			monitorJob.cancel();
 		}
 	}
+
+	public void revokeCache() {
+		playerRegionCache.clear();
+	}
+	
+	public boolean isPlayerInAnyRegion(Player player) {
+		return playerRegionCache.containsKey(player.getName());
+	}
 	
 	public class MonitorPlayerPositionJob extends BukkitRunnable {
 
@@ -67,7 +75,7 @@ public class PlayerPositionMonitor {
 			}
 			
 		}
-
+		
 		private void updatePlayerRegions(Player player) {
 
 			Region lastKnownRegion = getLastKnownRegion(player);

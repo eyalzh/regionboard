@@ -10,11 +10,11 @@ public class MemoryDBServiceTest {
 	public void SingleSet_Get_ReturnsCorrectValue() {
 		
 		MemoryDBService memoryDB = new MemoryDBService();
-		memoryDB.set("key", "value");
+		memoryDB.set("key", new String[]{"value"});
 		
-		String value = memoryDB.get("key");
+		String[] value = memoryDB.get("key");
 		
-		assertEquals(value, "value");
+		assertEquals("value", value[0]);
 		
 	}
 
@@ -23,13 +23,13 @@ public class MemoryDBServiceTest {
 		
 		MemoryDBService memoryDB = new MemoryDBService();
 		
-		memoryDB.set("key1", "value1");
-		memoryDB.set("key2", "value2");
-		memoryDB.set("key3", "value3");
+		memoryDB.set("key1", new String[]{"value1"});
+		memoryDB.set("key2", new String[]{"value2"});
+		memoryDB.set("key3", new String[]{"value3"});
 		
-		String value = memoryDB.get("key2");
+		String[] value = memoryDB.get("key2");
 		
-		assertEquals(value, "value2");
+		assertEquals("value2", value[0]);
 		
 	}
 	

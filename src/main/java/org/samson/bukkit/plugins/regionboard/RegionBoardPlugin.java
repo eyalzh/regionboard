@@ -13,6 +13,7 @@ import org.samson.bukkit.plugins.regionboard.db.DBService;
 import org.samson.bukkit.plugins.regionboard.db.MapDBService;
 import org.samson.bukkit.plugins.regionboard.event.RegionBoardEventListener;
 import org.samson.bukkit.plugins.regionboard.monitor.PlayerPositionMonitor;
+import org.samson.bukkit.plugins.regionboard.region.WorldGuardRegion;
 import org.samson.bukkit.plugins.regionboard.region.WorldGuardRegionMap;
 import org.samson.bukkit.plugins.regionboard.scoreboard.ScoreboardController;
 import org.samson.bukkit.plugins.regionboard.util.BukkitCommandLoader;
@@ -35,6 +36,7 @@ public class RegionBoardPlugin extends JavaPlugin {
 		statsTrackedInit.add(Statistic.TREASURE_FISHED);
 		statsTrackedInit.add(Statistic.JUNK_FISHED);
 		statsTrackedInit.add(Statistic.MINE_BLOCK);
+		statsTrackedInit.add(Statistic.USE_ITEM);
 		statsTrackedInit.add(Statistic.KILL_ENTITY);
 		statsTrackedInit.add(Statistic.ENTITY_KILLED_BY);
 		
@@ -56,7 +58,7 @@ public class RegionBoardPlugin extends JavaPlugin {
 	}
 
 	public void onEnable() { 
-
+		
 		regionsDB = new MapDBService(new File(getDataFolder(), "regions.db"));
 		regionMap = new WorldGuardRegionMap(regionsDB);
 		
@@ -79,6 +81,30 @@ public class RegionBoardPlugin extends JavaPlugin {
 	
 	public static boolean isStatTracked(Statistic stat) {
 		return STATS_TRACKED.contains(stat);
+	}
+	
+	public void addRegionBoard(String wgRegionId, String statName, String objectiveDisplayName) {
+		
+		Statistic stat = Statistic.valueOf(statName);
+		
+		if (stat != null && isStatTracked(stat)) {
+		
+			WorldGuardRegion newRegion = new WorldGuardRegion(wgRegionId, statName, objectiveDisplayName);
+			regionMap.addRegion(newRegion);
+			
+		}
+		
+	}
+	
+	public void removeAllRegions() {
+    	
+    	regionMap.removeAll();
+    	playerPositionMonitor.revokeCache();
+    	
+	}
+	
+	public PlayerPositionMonitor getPlayerPositionMonitor() {
+		return playerPositionMonitor;
 	}
 	
 }

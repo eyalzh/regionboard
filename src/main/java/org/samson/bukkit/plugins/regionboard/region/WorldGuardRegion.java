@@ -1,14 +1,12 @@
 package org.samson.bukkit.plugins.regionboard.region;
 
-import org.bukkit.Statistic;
-
 public class WorldGuardRegion implements Region {
-	
+
 	private String regionId;
-	private Statistic stat;
+	private String stat;
 	private String objectiveDisplayName;
 
-	public WorldGuardRegion(String wgRegionId, Statistic stat, String objectiveDisplayName) {
+	public WorldGuardRegion(String wgRegionId, String stat, String objectiveDisplayName) {
 		this.regionId = wgRegionId;
 		this.stat = stat;
 		this.objectiveDisplayName = objectiveDisplayName;
@@ -27,13 +25,36 @@ public class WorldGuardRegion implements Region {
 	@Override
 	public String toString() {
 		return "WorldGuardRegion [regionId=" + regionId
-				+ ", Statistic =" + stat.toString()
+				+ ", Statistic =" + stat
 				+ ", objectiveDisplayName=" + objectiveDisplayName + "]";
 	}
 
 	@Override
-	public Statistic getStatistic() {
+	public String getStatistic() {
 		return stat;
+	}
+
+	public String[] toStringValues() {
+
+		String values[] = new String[] {
+				regionId,
+				stat,
+				objectiveDisplayName 
+		};
+				
+		return values;
+	}
+
+	public static WorldGuardRegion fromStringValues(String[] regionValues) {
+
+		if (regionValues != null && regionValues.length == 3) {
+			
+			return new WorldGuardRegion(regionValues[0], regionValues[1], regionValues[2]);
+			
+		} else {
+			throw new IllegalArgumentException("regionValues should contain 3 strings");
+		}
+		
 	}
 	
 }
