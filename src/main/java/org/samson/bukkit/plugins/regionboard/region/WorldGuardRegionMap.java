@@ -80,4 +80,11 @@ public class WorldGuardRegionMap implements RegionMap {
 		dbService.clean();
 	}
 
+	@Override
+	public Region getRegionByName(String name) {
+		String[] regionValues = dbService.get(name);
+		WorldGuardRegion region = WorldGuardRegion.fromStringValues(regionValues);
+		return region;
+	}
+
 }

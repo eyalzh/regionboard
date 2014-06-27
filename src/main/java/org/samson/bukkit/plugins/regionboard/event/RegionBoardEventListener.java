@@ -74,9 +74,7 @@ public class RegionBoardEventListener implements Listener {
 			
 				Region firstRegion = regions.get(0);
 				
-				String regionStatName = firstRegion.getStatistic();
-				
-				if (regionStatName.equalsIgnoreCase(stat.name().toLowerCase())) {
+				if (firstRegion.matchPlayerStatisticIncrementEvent(event)) {
 					
 					ScoreboardController scoreboardController = plugin.getScoreboardController();
 					scoreboardController.updateScoreForPlayer(player, firstRegion, event.getNewValue() - event.getPreviousValue());					

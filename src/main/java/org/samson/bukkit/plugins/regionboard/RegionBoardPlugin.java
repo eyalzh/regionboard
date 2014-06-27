@@ -83,13 +83,12 @@ public class RegionBoardPlugin extends JavaPlugin {
 		return STATS_TRACKED.contains(stat);
 	}
 	
-	public void addRegionBoard(String wgRegionId, String statName, String objectiveDisplayName) {
+	public void addRegionBoard(WorldGuardRegion newRegion) {
 		
-		Statistic stat = Statistic.valueOf(statName);
+		Statistic statistic = Statistic.valueOf(newRegion.getMainStatisticName());
 		
-		if (stat != null && isStatTracked(stat)) {
-		
-			WorldGuardRegion newRegion = new WorldGuardRegion(wgRegionId, statName, objectiveDisplayName);
+		if (isStatTracked(statistic)) {
+			
 			regionMap.addRegion(newRegion);
 			
 		}

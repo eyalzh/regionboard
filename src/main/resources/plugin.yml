@@ -11,6 +11,7 @@ commands:
         /<command> version - Get the plugin's version
         /<command> add <region-id> <stat> <display-name> - Create a new Region Board
         /<command> list - List the existing regions
+        /<command> info <region-id> - Show the region board's info
         /<command> removeall - Remove all regions
       permission: regionboard.admin
 

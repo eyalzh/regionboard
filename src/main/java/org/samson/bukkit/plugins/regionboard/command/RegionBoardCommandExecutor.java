@@ -7,6 +7,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.samson.bukkit.plugins.regionboard.RegionBoardPlugin;
+import org.samson.bukkit.plugins.regionboard.region.Region;
+import org.samson.bukkit.plugins.regionboard.region.WorldGuardRegion;
 import org.samson.bukkit.plugins.regionboard.util.CommandExecutorBase;
 import org.samson.bukkit.plugins.regionboard.util.CommandExecutorSpec;
 import org.samson.bukkit.plugins.regionboard.util.SubCommand;
@@ -34,8 +36,9 @@ public class RegionBoardCommandExecutor extends CommandExecutorBase {
     		return;
     	} 
 
-    	// TODO - add validation
-    	plugin.addRegionBoard(args[0], args[1], args[2]);
+    	WorldGuardRegion newRegion = WorldGuardRegion.fromStringValues(args);
+    	
+    	plugin.addRegionBoard(newRegion);
     	
     	sender.sendMessage(ChatColor.DARK_GREEN + "Region added succesfully");
     	
@@ -50,6 +53,24 @@ public class RegionBoardCommandExecutor extends CommandExecutorBase {
     	sender.sendMessage(StringUtils.join(regions, ", "));
     	
     }
+    
+    @SubCommand(subCommand="info")
+    public void infoSubCommand(CommandSender sender, String[] args) {
+
+    	if (args.length != 1) {
+    		sender.sendMessage(ChatColor.RED + "Expected single argument");
+    		return;
+    	} 
+    	
+    	Region region = plugin.getRegionMap().getRegionByName(args[0]);
+    	
+    	if (region != null) {
+    		sender.sendMessage(ChatColor.DARK_GREEN + region.toString());
+    	} else {
+    		sender.sendMessage(ChatColor.RED + "No such region " + args[0]);
+    	}
+    	
+    }    
     
     @SubCommand(subCommand="removeall")
     public void removeAllSubCommand(CommandSender sender, String[] args) {
