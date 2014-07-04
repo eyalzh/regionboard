@@ -4,13 +4,12 @@ import static org.junit.Assert.*;
 
 import org.bukkit.Material;
 import org.bukkit.Statistic;
-import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.junit.Test;
 
 public class WorldGuardRegionTest {
 
 	@Test
-	public void StatisticsMainPart_Get_ReturnedCorrectly() {
+	public void GetMainStatisticName_ShouldReturnRightValue() {
 		
 		WorldGuardRegion region = new WorldGuardRegion("test-region", "MINE_BLOCK", "DIAMOND_ORE", "Display");
 		
@@ -21,7 +20,7 @@ public class WorldGuardRegionTest {
 	}
 	
 	@Test
-	public void StatisticsSubPart_Get_ReturnedCorrectly() {
+	public void GetSubStatisticName_ShouldReturnRightValue() {
 		
 		WorldGuardRegion region = new WorldGuardRegion("test-region", "MINE_BLOCK", "DIAMOND_ORE", "Display");
 		
@@ -32,7 +31,7 @@ public class WorldGuardRegionTest {
 	}
 
 	@Test
-	public void StatisticsSubPartNull_Get_ReturnedCorrectly() {
+	public void GetSubStatisticName_ShouldReturnNull_WhenEmpty() {
 		
 		WorldGuardRegion region = new WorldGuardRegion("test-region", "TREASURE_FISHED", null, "Display");
 		
@@ -43,32 +42,40 @@ public class WorldGuardRegionTest {
 	}
 	
 	@Test
-	public void Region_MatchEventWithoutSub_ReturnTrue() {
+	public void MatchStatistic_ShouldReturnTrue_WhenMainStatsMatch() {
 		
 		WorldGuardRegion region = new WorldGuardRegion("test-region", "TREASURE_FISHED", null, "Display");
 
-		PlayerStatisticIncrementEvent event = new PlayerStatisticIncrementEvent(null, Statistic.TREASURE_FISHED, 0, 1);
-		boolean isMatched = region.matchPlayerStatisticIncrementEvent(event);
+		boolean isMatched = region.matchStatistic(Statistic.TREASURE_FISHED, null, null);
 
 		assertTrue(isMatched);
 		
 	}
 
 	@Test
-	public void Region_MatchEventWithSub_ReturnTrue() {
+	public void MatchStatistic_ShouldReturnTrue_WhenMainAndSubStatsMatch() {
 		
 		WorldGuardRegion region = new WorldGuardRegion("test-region", "MINE_BLOCK", "STONE", "Display");
-
-		PlayerStatisticIncrementEvent event = new PlayerStatisticIncrementEvent(null, Statistic.MINE_BLOCK, 0, 1, Material.STONE);
 		
-		boolean isMatched = region.matchPlayerStatisticIncrementEvent(event);
+		boolean isMatched = region.matchStatistic(Statistic.MINE_BLOCK, Material.STONE, null);
 
 		assertTrue(isMatched);
 		
 	}	
 	
 	@Test
-	public void RegionId_Get_ReturnedCorrectly() {
+	public void MatchStatistic_ShouldReturnFalse_WhenSubStatsDoNotMatch() {
+		
+		WorldGuardRegion region = new WorldGuardRegion("test-region", "MINE_BLOCK", "STONE", "Display");
+		
+		boolean isMatched = region.matchStatistic(Statistic.MINE_BLOCK, Material.ANVIL, null);
+
+		assertFalse(isMatched);
+		
+	}		
+	
+	@Test
+	public void GetRegionId_ShouldReturnRightValue() {
 		
 		WorldGuardRegion region = new WorldGuardRegion("test-region", "TREASURE_FISHED", null, "Display");
 		

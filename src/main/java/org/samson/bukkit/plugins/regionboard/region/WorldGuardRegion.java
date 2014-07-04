@@ -2,7 +2,7 @@ package org.samson.bukkit.plugins.regionboard.region;
 
 import org.bukkit.Material;
 import org.bukkit.Statistic;
-import org.bukkit.event.player.PlayerStatisticIncrementEvent;
+import org.bukkit.entity.EntityType;
 
 public class WorldGuardRegion implements Region {
 
@@ -64,27 +64,6 @@ public class WorldGuardRegion implements Region {
 	}
 
 	@Override
-	public boolean matchPlayerStatisticIncrementEvent(PlayerStatisticIncrementEvent event) {
-		
-		Statistic statistic = event.getStatistic();
-		
-		if (! statistic.name().equalsIgnoreCase(mainStat)) {
-			return false;
-		}
-
-		if (statistic.equals(Statistic.MINE_BLOCK) && subStat != null) {
-			Material material = event.getMaterial();
-			if (material != null && material.name().equalsIgnoreCase(subStat)) {
-				return true;
-			} else {
-				return false;
-			}
-		} 
-		
-		return true;
-	}
-
-	@Override
 	public String getMainStatisticName() {
 		return mainStat;
 	}
@@ -94,9 +73,39 @@ public class WorldGuardRegion implements Region {
 		return subStat;
 	}
 	
+	@Override
+	public boolean matchStatistic(Statistic statistic, Material material, EntityType entityType) {
+		return 
+				matchMainStat(statistic) && 
+				matchSubStat(statistic, material, entityType);
+	}	
 	
+	private boolean matchSubStat(Statistic statistic, Material material, EntityType entityType) {
+		
+		if (subStat == null) {
+			// Always match if the sub-stat is not defined
+			return true;
+		}
+		
+		if (statistic.equals(Statistic.MINE_BLOCK) || statistic.equals(Statistic.USE_ITEM)) {
+			return (material != null && material.name().equalsIgnoreCase(subStat));
+		} 
+		
+		if (statistic.equals(Statistic.KILL_ENTITY) || statistic.equals(Statistic.ENTITY_KILLED_BY)) {
+			return (entityType != null && entityType.name().equalsIgnoreCase(subStat));
+		} 
+		
+		return true;
+	}
+
+	private boolean matchMainStat(Statistic statistic) {
+		return statistic.name().equalsIgnoreCase(mainStat);
+	}
+
 	private static String toSingleStatString(String mainStat, String subStat) {
 		return mainStat + ":" + subStat;
 	}
+
+
 	
 }

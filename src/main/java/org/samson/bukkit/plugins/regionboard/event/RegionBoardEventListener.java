@@ -53,7 +53,7 @@ public class RegionBoardEventListener implements Listener {
 	
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void onPlayerStatisticIncrementEvent(PlayerStatisticIncrementEvent event) {
-
+		
 		Statistic stat = event.getStatistic();
 		
 		if (! RegionBoardPlugin.isStatTracked(stat)) {
@@ -74,7 +74,9 @@ public class RegionBoardEventListener implements Listener {
 			
 				Region firstRegion = regions.get(0);
 				
-				if (firstRegion.matchPlayerStatisticIncrementEvent(event)) {
+				boolean isMatched = firstRegion.matchStatistic(stat, event.getMaterial(), event.getEntityType()); 
+				
+				if (isMatched) {
 					
 					ScoreboardController scoreboardController = plugin.getScoreboardController();
 					scoreboardController.updateScoreForPlayer(player, firstRegion, event.getNewValue() - event.getPreviousValue());					

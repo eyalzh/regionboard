@@ -1,6 +1,8 @@
 package org.samson.bukkit.plugins.regionboard.region;
 
-import org.bukkit.event.player.PlayerStatisticIncrementEvent;
+import org.bukkit.Material;
+import org.bukkit.Statistic;
+import org.bukkit.entity.EntityType;
 
 public interface Region {
 
@@ -10,6 +12,6 @@ public interface Region {
 	public String getMainStatisticName();
 	public String getSubStatisticName();
 	
-	public boolean matchPlayerStatisticIncrementEvent(PlayerStatisticIncrementEvent event);
+	public boolean matchStatistic(Statistic statistic, Material material, EntityType entityType);
 
 }
