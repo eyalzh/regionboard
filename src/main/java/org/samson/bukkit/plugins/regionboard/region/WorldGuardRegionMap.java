@@ -59,7 +59,7 @@ public class WorldGuardRegionMap implements RegionMap {
 	}
 	
 	@Override
-	public void addRegion(WorldGuardRegion region) {
+	public void addRegion(Region region) {
 		dbService.set(region.getRegionId(), region.toStringValues());
 	}
 
@@ -83,8 +83,16 @@ public class WorldGuardRegionMap implements RegionMap {
 	@Override
 	public Region getRegionByName(String name) {
 		String[] regionValues = dbService.get(name);
-		WorldGuardRegion region = WorldGuardRegion.fromStringValues(regionValues);
-		return region;
+		if (regionValues != null) {
+			WorldGuardRegion region = WorldGuardRegion.fromStringValues(regionValues);
+			return region;
+		} else {
+			return null;
+		}
+	}
+
+	public void removeRegionById(String id) {
+		dbService.remove(id);
 	}
 
 }

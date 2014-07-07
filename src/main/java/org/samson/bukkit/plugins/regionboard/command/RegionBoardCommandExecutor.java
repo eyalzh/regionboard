@@ -24,7 +24,8 @@ public class RegionBoardCommandExecutor extends CommandExecutorBase {
     public void versionSubCommand(CommandSender sender, String[] args) {
     	
     	final PluginDescriptionFile pluginDescription = plugin.getDescription();
-    	sender.sendMessage(ChatColor.DARK_GREEN + pluginDescription.getName() + " version " + pluginDescription.getVersion());
+    	sender.sendMessage(ChatColor.DARK_GREEN +
+    			pluginDescription.getName() + " version " + pluginDescription.getVersion());
     	
     }
 
@@ -32,15 +33,27 @@ public class RegionBoardCommandExecutor extends CommandExecutorBase {
     public void addSubCommand(CommandSender sender, String[] args) {
 
     	if (args.length != 3) {
-    		sender.sendMessage(ChatColor.RED + "Missing arguments");
+    		sender.sendMessage(ChatColor.RED + "Usage: add <region-id> <stat> <display-name>");
     		return;
     	} 
 
+    	Region region = plugin.getRegionMap().getRegionByName(args[0]);
+    	
+    	if (region != null) {
+    		sender.sendMessage(ChatColor.RED +
+    				"Region " + args[0] + " already exists! Remove it first.");
+    		return;
+    	}
+    	
     	WorldGuardRegion newRegion = WorldGuardRegion.fromStringValues(args);
     	
-    	plugin.addRegionBoard(newRegion);
-    	
-    	sender.sendMessage(ChatColor.DARK_GREEN + "Region added succesfully");
+    	try {
+    		plugin.addRegionBoard(newRegion);
+    		sender.sendMessage(ChatColor.DARK_GREEN + "Region added succesfully");
+    	} catch (IllegalArgumentException e) {
+    		// TODO refactor
+    		sender.sendMessage(ChatColor.RED + "Illegal region data");
+    	}
     	
     }
     
@@ -71,15 +84,42 @@ public class RegionBoardCommandExecutor extends CommandExecutorBase {
     	}
     	
     }    
-    
-    @SubCommand(subCommand="removeall")
-    public void removeAllSubCommand(CommandSender sender, String[] args) {
 
-    	plugin.removeAllRegions();
+    @SubCommand(subCommand="reset")
+    public void resetSubCommand(CommandSender sender, String[] args) {
+
+    	if (args.length != 1) {
+    		sender.sendMessage(ChatColor.RED + "Expected region ID");
+    		return;
+    	}    	
     	
-    	sender.sendMessage(ChatColor.DARK_GREEN + "All regions removed!");
+    	plugin.getScoreboardController().resetScoreboard(args[0]);
     	
-    }    
+    	sender.sendMessage(ChatColor.DARK_GREEN + "Region board was reset.");
+    	
+    }   
     
+    @SubCommand(subCommand="remove")
+    public void removeSubCommand(CommandSender sender, String[] args) {
+
+    	if (args.length != 1) {
+    		sender.sendMessage(ChatColor.RED + "Expected region ID");
+    		return;
+    	}      	
+    	
+    	if (plugin.getRegionMap().getRegionByName(args[0]) != null) {
+    		
+	    	plugin.getRegionMap().removeRegionById(args[0]);
+	    	plugin.getPlayerPositionMonitor().revokeCache();
+	    	
+	    	sender.sendMessage(ChatColor.DARK_GREEN + "region removed!");
+	    	
+    	} else {
+    		
+    		sender.sendMessage(ChatColor.RED + "Cannot find the region " + args[0]);
+    		
+    	}
+    	
+    }
     
 }

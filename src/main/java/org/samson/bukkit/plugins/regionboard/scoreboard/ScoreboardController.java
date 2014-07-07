@@ -2,6 +2,7 @@ package org.samson.bukkit.plugins.regionboard.scoreboard;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -79,6 +80,21 @@ public class ScoreboardController {
 		score.setScore(score.getScore() + incr);
 		
 		
-	}	
+	}
+
+	public void resetScoreboard(String regionId) {
+		
+		if (regionalScoreboardMap.containsKey(regionId)) {
+			
+			Scoreboard scoreboard = regionalScoreboardMap.get(regionId);
+			
+			Set<String> entries = scoreboard.getEntries();
+			for (String entry : entries) {
+				scoreboard.resetScores(entry);
+			}
+			
+		}
+		
+	}
 
 }

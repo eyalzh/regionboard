@@ -13,14 +13,15 @@ import org.samson.bukkit.plugins.regionboard.db.DBService;
 import org.samson.bukkit.plugins.regionboard.db.MapDBService;
 import org.samson.bukkit.plugins.regionboard.event.RegionBoardEventListener;
 import org.samson.bukkit.plugins.regionboard.monitor.PlayerPositionMonitor;
-import org.samson.bukkit.plugins.regionboard.region.WorldGuardRegion;
+import org.samson.bukkit.plugins.regionboard.region.Region;
+import org.samson.bukkit.plugins.regionboard.region.RegionMap;
 import org.samson.bukkit.plugins.regionboard.region.WorldGuardRegionMap;
 import org.samson.bukkit.plugins.regionboard.scoreboard.ScoreboardController;
 import org.samson.bukkit.plugins.regionboard.util.BukkitCommandLoader;
 
 public class RegionBoardPlugin extends JavaPlugin {
 	
-	private WorldGuardRegionMap regionMap;
+	private RegionMap regionMap;
 	private DBService regionsDB;
 	
 	private static final Set<Statistic> STATS_TRACKED;
@@ -75,7 +76,7 @@ public class RegionBoardPlugin extends JavaPlugin {
 		return scoreboardController;
 	}
 
-	public WorldGuardRegionMap getRegionMap() {
+	public RegionMap getRegionMap() {
 		return regionMap;
 	}
 	
@@ -83,13 +84,17 @@ public class RegionBoardPlugin extends JavaPlugin {
 		return STATS_TRACKED.contains(stat);
 	}
 	
-	public void addRegionBoard(WorldGuardRegion newRegion) {
+	public void addRegionBoard(Region newRegion) {
 		
 		Statistic statistic = Statistic.valueOf(newRegion.getMainStatisticName());
 		
 		if (isStatTracked(statistic)) {
 			
 			regionMap.addRegion(newRegion);
+			
+		} else {
+			
+			throw new IllegalArgumentException();
 			
 		}
 		

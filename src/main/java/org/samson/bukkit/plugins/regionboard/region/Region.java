@@ -13,5 +13,6 @@ public interface Region {
 	public String getSubStatisticName();
 	
 	public boolean matchStatistic(Statistic statistic, Material material, EntityType entityType);
+	public String[] toStringValues();
 
 }

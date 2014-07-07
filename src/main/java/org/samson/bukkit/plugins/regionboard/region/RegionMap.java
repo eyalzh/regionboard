@@ -10,12 +10,14 @@ public interface RegionMap {
 
 	public List<Region> getRegionsByLocation(Location playerLocation) throws MissingDBService;
 
-	public void addRegion(WorldGuardRegion region);
+	public void addRegion(Region region);
 
 	public boolean isPlayerInRegion(Player player, Region lastKnownRegion);
 	
 	public Set<String> getAllRegions();
 	public Region getRegionByName(String name);
+	
+	public void removeRegionById(String id);
 	
 	public void removeAll();
 	

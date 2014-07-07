@@ -32,4 +32,9 @@ public class MemoryDBService implements DBService {
 		memory.clear();
 	}
 
+	@Override
+	public void remove(String key) {
+		memory.remove(key);
+	}
+
 }

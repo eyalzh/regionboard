@@ -49,6 +49,12 @@ public class MapDBService implements DBService {
 	public void clean() {
 		hashMap.clear();
 		db.commit();
+	}
+
+	@Override
+	public void remove(String key) {
+		hashMap.remove(key);
+		db.commit();
 	}	
 	
 }
