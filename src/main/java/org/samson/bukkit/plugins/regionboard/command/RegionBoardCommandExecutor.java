@@ -54,7 +54,7 @@ public class RegionBoardCommandExecutor extends CommandExecutorBase {
     		plugin.addRegionBoard(newRegion);
     		sender.sendMessage(ChatColor.DARK_GREEN + "Region " + regionId + " added succesfully");
     	} catch (IllegalArgumentException e) {
-    		// TODO refactor
+    		// TODO refactor (more intelligible exceptions)
     		sender.sendMessage(ChatColor.RED + "Illegal region data");
     	}
     	
@@ -96,6 +96,7 @@ public class RegionBoardCommandExecutor extends CommandExecutorBase {
     		return;
     	}    	
     	
+    	// TODO add validation
     	plugin.getScoreboardController().resetScoreboard(args[0]);
     	
     	sender.sendMessage(ChatColor.DARK_GREEN + "Region board was reset.");
@@ -110,16 +111,19 @@ public class RegionBoardCommandExecutor extends CommandExecutorBase {
     		return;
     	}      	
     	
-    	if (plugin.getRegionMap().getRegionByName(args[0]) != null) {
+    	final String regionId = args[0];
+    	
+    	if (plugin.getRegionMap().getRegionByName(regionId) != null) {
     		
-	    	plugin.getRegionMap().removeRegionById(args[0]);
+	    	plugin.getRegionMap().removeRegionById(regionId);
+	    	plugin.getScoreboardController().resetScoreboard(regionId);
 	    	plugin.getPlayerPositionMonitor().revokeCache();
 	    	
 	    	sender.sendMessage(ChatColor.DARK_GREEN + "region removed!");
 	    	
     	} else {
     		
-    		sender.sendMessage(ChatColor.RED + "Cannot find the region " + args[0]);
+    		sender.sendMessage(ChatColor.RED + "Cannot find the region " + regionId);
     		
     	}
     	
