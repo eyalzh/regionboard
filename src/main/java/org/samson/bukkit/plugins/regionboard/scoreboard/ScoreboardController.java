@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -38,7 +40,8 @@ public class ScoreboardController {
 		if (objective == null) {
 		
 			objective = scoreboard.registerNewObjective("regional", "dummy");
-			objective.setDisplayName(displayName);
+			String formattedDisplayName = StringUtils.replaceChars(displayName, '_', ' ');
+			objective.setDisplayName(ChatColor.translateAlternateColorCodes('&', formattedDisplayName));
 			
 		}
 
