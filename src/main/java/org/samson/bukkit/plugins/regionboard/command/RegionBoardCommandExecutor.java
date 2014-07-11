@@ -37,7 +37,9 @@ public class RegionBoardCommandExecutor extends CommandExecutorBase {
     		return;
     	} 
 
-    	Region region = plugin.getRegionMap().getRegionByName(args[0]);
+    	final String regionId = args[0];
+    	
+    	Region region = plugin.getRegionMap().getRegionByName(regionId);
     	
     	if (region != null) {
     		sender.sendMessage(ChatColor.RED +
@@ -45,11 +47,12 @@ public class RegionBoardCommandExecutor extends CommandExecutorBase {
     		return;
     	}
     	
+    	// TODO refactor (don't pass args)
     	WorldGuardRegion newRegion = WorldGuardRegion.fromStringValues(args);
     	
     	try {
     		plugin.addRegionBoard(newRegion);
-    		sender.sendMessage(ChatColor.DARK_GREEN + "Region added succesfully");
+    		sender.sendMessage(ChatColor.DARK_GREEN + "Region " + regionId + " added succesfully");
     	} catch (IllegalArgumentException e) {
     		// TODO refactor
     		sender.sendMessage(ChatColor.RED + "Illegal region data");
