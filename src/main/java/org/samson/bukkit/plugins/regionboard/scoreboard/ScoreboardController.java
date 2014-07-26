@@ -42,8 +42,7 @@ public class ScoreboardController {
 		if (objective == null) {
 		
 			objective = scoreboard.registerNewObjective("regional", "dummy");
-			String formattedDisplayName = StringUtils.replaceChars(displayName, '_', ' ');
-			objective.setDisplayName(ChatColor.translateAlternateColorCodes('&', formattedDisplayName));
+			objective.setDisplayName(getFormattedScoreboardDisplayName(displayName));
 			
 		}
 
@@ -145,6 +144,11 @@ public class ScoreboardController {
 		
 		return scores;
 		
+	}
+	
+	public static String getFormattedScoreboardDisplayName(String displayName) {
+		String formattedDisplayName = StringUtils.replaceChars(displayName, '_', ' ');
+		return ChatColor.translateAlternateColorCodes('&', formattedDisplayName);
 	}
 
 }

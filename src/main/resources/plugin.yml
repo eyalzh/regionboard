@@ -7,14 +7,7 @@ depend: [WorldGuard]
 commands:
    regionboard:
       description: RegionBoard Admin Command
-      usage: |
-        /<command> version - Get the plugin's version
-        /<command> list - List the existing regions
-        /<command> add <region-id> <stat> <display-name> - Create a new region board
-        /<command> info <region-id> - Show the region board's info
-        /<command> reset <region-id> - Reset all scores of a region board
-        /<command> autoreset <region-id> <time-secs> [xp-points] - Reset scores automatically and give XP to top player
-        /<command> remove <region-id> - Remove the region board
+      usage: /<command> [version | list | add | info | reset | autoreset | remove]
       permission: regionboard.admin
 
 permissions:
@@ -22,3 +15,7 @@ permissions:
    regionboard.admin:
       description: Allows you to use the RegionBoard admin command
       default: op
+
+   regionboard.seewinmsg:
+      description: Allows you to see the auto-reset win message
+      default: true

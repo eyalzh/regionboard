@@ -68,6 +68,7 @@ public class RegionBoardPlugin extends JavaPlugin {
 
 	public void onEnable() { 
 		
+		getDataFolder().mkdirs();
 		regionsDB = new MapDBService(new File(getDataFolder(), "regions.db"));
 		regionMap = new WorldGuardRegionMap(regionsDB);
 		

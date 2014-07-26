@@ -32,16 +32,24 @@ public class AutoResetJob extends BukkitRunnable {
 			
 			@SuppressWarnings("deprecation")
 			Player player = plugin.getServer().getPlayer(entry);
+
+			scoreboardController.resetScoreboard(region.getRegionId());
 			
 			if (player != null && player.isOnline()) {
 				
-				plugin.getServer().broadcastMessage(ChatColor.DARK_BLUE + 
-						player.getDisplayName() + " wins " + xpPoints + " XP points (" + region.getRegionId() + ")");
-				
-				scoreboardController.resetScoreboard(region.getRegionId());
-				
 				if (xpPoints > 0) {
+					
+					String winMsg = player.getDisplayName()
+							+ ChatColor.LIGHT_PURPLE
+							+ " wins " + xpPoints + " XP points (" 
+							+ ScoreboardController.getFormattedScoreboardDisplayName(region.getScoreboardDisplayName())
+							+ ChatColor.LIGHT_PURPLE
+							+ ")";
+					
+					plugin.getServer().broadcast(winMsg, "regionboard.seewinmsg");
+					
 					player.giveExp(xpPoints);
+					
 				}
 				
 			}

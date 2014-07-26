@@ -26,9 +26,16 @@ public class RegionBoardCommandExecutor extends CommandExecutorBase {
     	final PluginDescriptionFile pluginDescription = plugin.getDescription();
     	sender.sendMessage(ChatColor.DARK_GREEN +
     			pluginDescription.getName() + " version " + pluginDescription.getVersion());
+    	sender.sendMessage(ChatColor.GREEN +
+    			"For help, please see RegionBoard's Bukkit page.");    	
     	
     }
 
+    @SubCommand(subCommand="help")
+    public void helpSubCommand(CommandSender sender, String[] args) {
+    	versionSubCommand(sender, args);
+    }    
+    
     @SubCommand(
     		subCommand="add", 
     		numberOfArgs = 3, 

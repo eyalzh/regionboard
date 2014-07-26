@@ -2,11 +2,13 @@ package org.samson.bukkit.plugins.regionboard.event;
 
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 
 import org.samson.bukkit.plugins.regionboard.RegionBoardPlugin;
@@ -37,6 +39,31 @@ public class RegionBoardEventListener implements Listener {
 		scoreboardController.displayObjectiveForPlayer(player, region.getRegionId(), region.getScoreboardDisplayName());
 		
 	}
+	
+	@EventHandler
+	public void onPlayerJoinsIntoRegion(PlayerJoinEvent event) {
+		
+		Player player = event.getPlayer();
+		
+		Location location = player.getLocation();
+		
+		List<Region> regions;
+		try {
+			
+			regions = plugin.getRegionMap().getRegionsByLocation(location);
+			
+			if (regions.size() > 0) {
+				Region firstRegion = regions.get(0);
+				
+				ScoreboardController scoreboardController = plugin.getScoreboardController();
+				scoreboardController.displayObjectiveForPlayer(player, firstRegion.getRegionId(), firstRegion.getScoreboardDisplayName());
+			}			
+			
+		} catch (MissingDBService e) {
+			e.printStackTrace();
+		}
+		
+	}	
 	
 	@EventHandler
 	public void onPlayerLeavesRegion(PlayerLeavesRegion event) {
