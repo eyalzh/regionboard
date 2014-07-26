@@ -9,10 +9,11 @@ commands:
       description: RegionBoard Admin Command
       usage: |
         /<command> version - Get the plugin's version
-        /<command> add <region-id> <stat> <display-name> - Create a new region board
         /<command> list - List the existing regions
+        /<command> add <region-id> <stat> <display-name> - Create a new region board
         /<command> info <region-id> - Show the region board's info
         /<command> reset <region-id> - Reset all scores of a region board
+        /<command> autoreset <region-id> <time-secs> [xp-points] - Reset scores automatically and give XP to top player
         /<command> remove <region-id> - Remove the region board
       permission: regionboard.admin
 

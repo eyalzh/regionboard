@@ -29,17 +29,16 @@ public class RegionBoardCommandExecutor extends CommandExecutorBase {
     	
     }
 
-    @SubCommand(subCommand="add")
+    @SubCommand(
+    		subCommand="add", 
+    		numberOfArgs = 3, 
+    		usageMessage = "Usage: add <region-id> <stat> <display-name>"
+    )
     public void addSubCommand(CommandSender sender, String[] args) {
-
-    	if (args.length != 3) {
-    		sender.sendMessage(ChatColor.RED + "Usage: add <region-id> <stat> <display-name>");
-    		return;
-    	} 
 
     	final String regionId = args[0];
     	
-    	Region region = plugin.getRegionMap().getRegionByName(regionId);
+    	Region region = plugin.getRegionMap().getRegionById(regionId);
     	
     	if (region != null) {
     		sender.sendMessage(ChatColor.RED +
@@ -47,8 +46,12 @@ public class RegionBoardCommandExecutor extends CommandExecutorBase {
     		return;
     	}
     	
-    	// TODO refactor (don't pass args)
-    	WorldGuardRegion newRegion = WorldGuardRegion.fromStringValues(args);
+    	String[] statParts = args[1].split(":");
+    	WorldGuardRegion newRegion = new WorldGuardRegion(
+    			args[0], 
+    			statParts[0], 
+    			(statParts.length > 1)?statParts[1]:null, 
+    			args[2]);
     	
     	try {
     		plugin.addRegionBoard(newRegion);
@@ -70,31 +73,29 @@ public class RegionBoardCommandExecutor extends CommandExecutorBase {
     	
     }
     
-    @SubCommand(subCommand="info")
+    @SubCommand(
+    		subCommand="info", 
+    		numberOfArgs = 1, 
+    		usageMessage = "Usage: info <region-id>"
+    )
     public void infoSubCommand(CommandSender sender, String[] args) {
 
-    	if (args.length != 1) {
-    		sender.sendMessage(ChatColor.RED + "Expected single argument");
-    		return;
-    	} 
-    	
-    	Region region = plugin.getRegionMap().getRegionByName(args[0]);
+    	Region region = plugin.getRegionMap().getRegionById(args[0]);
     	
     	if (region != null) {
     		sender.sendMessage(ChatColor.DARK_GREEN + region.toString());
     	} else {
-    		sender.sendMessage(ChatColor.RED + "No such region " + args[0]);
+    		sender.sendMessage(ChatColor.RED + "No such region: " + args[0]);
     	}
     	
     }    
 
-    @SubCommand(subCommand="reset")
+    @SubCommand(
+    		subCommand="reset", 
+    		numberOfArgs = 1, 
+    		usageMessage = "Usage: reset <region-id>"
+    )
     public void resetSubCommand(CommandSender sender, String[] args) {
-
-    	if (args.length != 1) {
-    		sender.sendMessage(ChatColor.RED + "Expected region ID");
-    		return;
-    	}    	
     	
     	// TODO add validation
     	plugin.getScoreboardController().resetScoreboard(args[0]);
@@ -102,24 +103,58 @@ public class RegionBoardCommandExecutor extends CommandExecutorBase {
     	sender.sendMessage(ChatColor.DARK_GREEN + "Region board was reset.");
     	
     }   
-    
-    @SubCommand(subCommand="remove")
-    public void removeSubCommand(CommandSender sender, String[] args) {
 
-    	if (args.length != 1) {
-    		sender.sendMessage(ChatColor.RED + "Expected region ID");
-    		return;
-    	}      	
+    @SubCommand(
+    		subCommand="autoreset", 
+    		numberOfArgs = 2, 
+    		usageMessage = "Usage: autoreset <region-id> <time-secs> [xp-points]"
+    )
+    public void autoresetSubCommand(CommandSender sender, String[] args) {
+
+    	final String regionId = args[0];
+    	
+    	Region region = plugin.getRegionMap().getRegionById(args[0]);
+    	
+    	if (region != null) {
+    	
+    		int timeMins = Integer.parseInt(args[1]);
+    		region.setAutoResetTime(timeMins);
+    		
+    		if (args.length > 2) {
+    			int xpPoints = Integer.parseInt(args[2]);
+    			region.setAutoResetXpReward(xpPoints);
+    		}
+
+    		plugin.getRegionMap().updateRegion(region);
+    		
+    		plugin.startAutoResetJob(region);
+    		
+    		sender.sendMessage(ChatColor.DARK_GREEN + "Auto reset started for " + regionId);
+    		
+    	} else {
+    		
+    		sender.sendMessage(ChatColor.RED + "Cannot find the region " + regionId);
+    		
+    	}
+    	
+    }      
+    
+    @SubCommand(
+    		subCommand="remove", 
+    		numberOfArgs = 1, 
+    		usageMessage = "Usage: remove <region-id>"
+    )
+    public void removeSubCommand(CommandSender sender, String[] args) {
     	
     	final String regionId = args[0];
     	
-    	if (plugin.getRegionMap().getRegionByName(regionId) != null) {
+    	if (plugin.getRegionMap().getRegionById(regionId) != null) {
     		
 	    	plugin.getRegionMap().removeRegionById(regionId);
-	    	plugin.getScoreboardController().resetScoreboard(regionId);
+	    	plugin.getScoreboardController().removeScoreboardForRegion(regionId);
 	    	plugin.getPlayerPositionMonitor().revokeCache();
 	    	
-	    	sender.sendMessage(ChatColor.DARK_GREEN + "region removed!");
+	    	sender.sendMessage(ChatColor.DARK_GREEN + "region " + regionId + " removed!");
 	    	
     	} else {
     		

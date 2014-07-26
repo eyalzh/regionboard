@@ -9,7 +9,7 @@ public class MapDBService implements DBService {
 	
 	private File datafile;
 	private DB db;
-	private HTreeMap<String, String[]> hashMap;
+	private HTreeMap<String, String> hashMap;
 
 	public MapDBService(File datafile) {
 		this.datafile = datafile;
@@ -17,12 +17,12 @@ public class MapDBService implements DBService {
 	}
 
 	@Override
-	public String[] get(String key) {
+	public String get(String key) {
 		return hashMap.get(key);
 	}
 
 	@Override
-	public void set(String key, String[] value) {
+	public void set(String key, String value) {
 		hashMap.put(key, value);
 		db.commit();
 	}

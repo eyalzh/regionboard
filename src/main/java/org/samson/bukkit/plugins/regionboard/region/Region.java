@@ -13,6 +13,11 @@ public interface Region {
 	public String getSubStatisticName();
 	
 	public boolean matchStatistic(Statistic statistic, Material material, EntityType entityType);
-	public String[] toStringValues();
+	
+	public void setAutoResetTime(int timeSecs);
+	public void setAutoResetXpReward(int xpPoints);
+	
+	public int getAutoResetTime();
+	public int getXpPoints();
 
 }

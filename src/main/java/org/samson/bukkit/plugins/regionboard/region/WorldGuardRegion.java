@@ -10,6 +10,9 @@ public class WorldGuardRegion implements Region {
 	private String mainStat;
 	private String subStat;
 	private String objectiveDisplayName;
+	
+	private int autoResetSecs;
+	private int autoResetXpReward;
 
 	public WorldGuardRegion(String wgRegionId, String mainStat, String subStat, String objectiveDisplayName) {
 		this.regionId = wgRegionId;
@@ -30,37 +33,12 @@ public class WorldGuardRegion implements Region {
 	
 	@Override
 	public String toString() {
-		return "WorldGuardRegion [regionId=" + regionId
-				+ ", Main statistic =" + mainStat
-				+ ", Sub statistic =" + subStat
-				+ ", objectiveDisplayName=" + objectiveDisplayName + "]";
-	}
-
-	public String[] toStringValues() {
-
-		String values[] = new String[] {
-				regionId,
-				toSingleStatString(mainStat, subStat),
-				objectiveDisplayName 
-		};
-
-		return values;
-	}
-
-	public static WorldGuardRegion fromStringValues(String[] regionValues) {
-
-		if (regionValues != null && regionValues.length == 3) {
-			
-			String[] statParts = regionValues[1].split(":");
-			
-			String subStat = (statParts.length > 1) ? statParts[1] : null;			
-			
-			return new WorldGuardRegion(regionValues[0], statParts[0], subStat, regionValues[2]);
-			
-		} else {
-			throw new IllegalArgumentException("regionValues should contain 3 strings");
-		}
-		
+		return "WorldGuardRegion [ID = " + regionId
+				+ ", main statistic = " + mainStat
+				+ ", sub statistic = " + subStat
+				+ ", auto reset = " + autoResetSecs
+				+ ", xp reward = " + autoResetXpReward
+				+ ", display name = " + objectiveDisplayName + "]";
 	}
 
 	@Override
@@ -102,10 +80,24 @@ public class WorldGuardRegion implements Region {
 		return statistic.name().equalsIgnoreCase(mainStat);
 	}
 
-	private static String toSingleStatString(String mainStat, String subStat) {
-		return mainStat + ":" + subStat;
+	@Override
+	public void setAutoResetTime(int timeSecs) {
+		autoResetSecs = timeSecs;
 	}
 
+	@Override
+	public void setAutoResetXpReward(int xpPoints) {
+		autoResetXpReward = xpPoints;
+	}
 
+	@Override
+	public int getAutoResetTime() {
+		return autoResetSecs;
+	}
+
+	@Override
+	public int getXpPoints() {
+		return autoResetXpReward;
+	}
 	
 }

@@ -15,10 +15,12 @@ public interface RegionMap {
 	public boolean isPlayerInRegion(Player player, Region lastKnownRegion);
 	
 	public Set<String> getAllRegions();
-	public Region getRegionByName(String name);
+	public Region getRegionById(String id);
 	
 	public void removeRegionById(String id);
 	
 	public void removeAll();
+
+	public void updateRegion(Region region);
 	
 }

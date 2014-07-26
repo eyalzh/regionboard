@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.samson.bukkit.plugins.regionboard.db.DBService;
 
+import com.google.gson.Gson;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 
@@ -29,6 +30,8 @@ public class WorldGuardRegionMap implements RegionMap {
 			throw new MissingDBService();
 		}
 		
+		Gson gson = new Gson();		
+		
 		List<Region> regions = new ArrayList<Region>();
 		
 		List<String> wgRegions = getWGRegionsIdsByLocation(playerLocation);
@@ -38,8 +41,9 @@ public class WorldGuardRegionMap implements RegionMap {
 			Object regionData = dbService.get(wgRegionId);
 			
 			if (regionData != null) {
-				String[] regionValues = dbService.get(wgRegionId);
-				WorldGuardRegion region = WorldGuardRegion.fromStringValues(regionValues);
+				String regionJSON = dbService.get(wgRegionId);
+				
+				WorldGuardRegion region = gson.fromJson(regionJSON, WorldGuardRegion.class);   
 				regions.add(region);
 			}
 
@@ -48,19 +52,11 @@ public class WorldGuardRegionMap implements RegionMap {
 		return regions;
 	}
 
-	private List<String> getWGRegionsIdsByLocation(Location playerLocation) {
-		WorldGuardPlugin worldGuardPlugin = WGBukkit.getPlugin();
-		
-		Vector locVector = BukkitUtil.toVector(playerLocation.toVector());
-		
-		List<String> wgRegions = worldGuardPlugin.getRegionManager(playerLocation.getWorld()).getApplicableRegionsIDs(locVector);
-				
-		return wgRegions;
-	}
+
 	
 	@Override
 	public void addRegion(Region region) {
-		dbService.set(region.getRegionId(), region.toStringValues());
+		setRegion(region);
 	}
 
 	@Override
@@ -81,11 +77,17 @@ public class WorldGuardRegionMap implements RegionMap {
 	}
 
 	@Override
-	public Region getRegionByName(String name) {
-		String[] regionValues = dbService.get(name);
-		if (regionValues != null) {
-			WorldGuardRegion region = WorldGuardRegion.fromStringValues(regionValues);
+	public Region getRegionById(String id) {
+		
+		Gson gson = new Gson();	
+		
+		String regionJSON = dbService.get(id);
+		if (regionJSON != null) {
+			
+			WorldGuardRegion region = gson.fromJson(regionJSON, WorldGuardRegion.class);   
+
 			return region;
+			
 		} else {
 			return null;
 		}
@@ -95,4 +97,26 @@ public class WorldGuardRegionMap implements RegionMap {
 		dbService.remove(id);
 	}
 
+	@Override
+	public void updateRegion(Region region) {
+		setRegion(region);
+	}
+	
+	private void setRegion(Region region) {
+		Gson gson = new Gson();
+		
+		dbService.set(region.getRegionId(), gson.toJson((WorldGuardRegion)region));
+	}	
+	
+	private List<String> getWGRegionsIdsByLocation(Location playerLocation) {
+		WorldGuardPlugin worldGuardPlugin = WGBukkit.getPlugin();
+		
+		Vector locVector = BukkitUtil.toVector(playerLocation.toVector());
+		
+		List<String> wgRegions = worldGuardPlugin.getRegionManager(playerLocation.getWorld()).getApplicableRegionsIDs(locVector);
+				
+		return wgRegions;
+	}	
+	
+	
 }

@@ -10,5 +10,7 @@ import java.lang.annotation.Target;
 public @interface SubCommand {
 
 	String subCommand();
+	int numberOfArgs() default 0;
+	String usageMessage() default "";
 
 }

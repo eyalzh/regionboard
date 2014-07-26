@@ -2,7 +2,10 @@ package org.samson.bukkit.plugins.regionboard;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bukkit.Statistic;
@@ -13,6 +16,7 @@ import org.samson.bukkit.plugins.regionboard.db.DBService;
 import org.samson.bukkit.plugins.regionboard.db.MapDBService;
 import org.samson.bukkit.plugins.regionboard.event.RegionBoardEventListener;
 import org.samson.bukkit.plugins.regionboard.monitor.PlayerPositionMonitor;
+import org.samson.bukkit.plugins.regionboard.region.AutoResetJob;
 import org.samson.bukkit.plugins.regionboard.region.Region;
 import org.samson.bukkit.plugins.regionboard.region.RegionMap;
 import org.samson.bukkit.plugins.regionboard.region.WorldGuardRegionMap;
@@ -46,11 +50,15 @@ public class RegionBoardPlugin extends JavaPlugin {
 	
 	private final RegionBoardEventListener eventListener = new RegionBoardEventListener(this);
 	private final ScoreboardController scoreboardController = new ScoreboardController();
-	private final PlayerPositionMonitor playerPositionMonitor = new PlayerPositionMonitor(this);	
+	private final PlayerPositionMonitor playerPositionMonitor = new PlayerPositionMonitor(this);
+	
+	private Map<String, AutoResetJob> regionJobs = new HashMap<String, AutoResetJob>();
 	
 	public void onDisable() {
 		
 		playerPositionMonitor.stop();
+		
+		stopRegionJobs();
 		
 		if (regionsDB != null) {
 			regionsDB.close();
@@ -63,6 +71,8 @@ public class RegionBoardPlugin extends JavaPlugin {
 		regionsDB = new MapDBService(new File(getDataFolder(), "regions.db"));
 		regionMap = new WorldGuardRegionMap(regionsDB);
 		
+		startRegionJobs();
+		
 		BukkitCommandLoader.loadCommands(this, RegionBoardCommandExecutor.class);
 		
 		PluginManager pm = this.getServer().getPluginManager();
@@ -71,6 +81,7 @@ public class RegionBoardPlugin extends JavaPlugin {
 		playerPositionMonitor.start();
 		
 	}
+
 
 	public ScoreboardController getScoreboardController() {
 		return scoreboardController;
@@ -110,5 +121,45 @@ public class RegionBoardPlugin extends JavaPlugin {
 	public PlayerPositionMonitor getPlayerPositionMonitor() {
 		return playerPositionMonitor;
 	}
+
+	public void startAutoResetJob(Region region) {
+		
+		if (region.getAutoResetTime() > 0) {
+			
+			if (regionJobs.containsKey(region.getRegionId())) {
+				AutoResetJob previousJob = regionJobs.get(region.getRegionId());
+				previousJob.cancel();
+			}
+		
+			AutoResetJob autoResetJob = new AutoResetJob(this, region);
+			int period = 20 * region.getAutoResetTime();
+			autoResetJob.runTaskTimer(this, period, period);
+			
+			regionJobs.put(region.getRegionId(), autoResetJob);
+			
+		}
+		
+	}
+	
+	private void stopRegionJobs() {
+		
+		Set<Entry<String, AutoResetJob>> entrySet = regionJobs.entrySet();
+		
+		for (Entry<String, AutoResetJob> entry : entrySet) {
+			entry.getValue().cancel();
+		}
+		
+	}
+	
+	private void startRegionJobs() {
+		
+		Set<String> allRegions = regionMap.getAllRegions();
+		
+		for (String regionId : allRegions) {
+			Region region = regionMap.getRegionById(regionId);
+			startAutoResetJob(region);
+		}
+		
+	}	
 	
 }

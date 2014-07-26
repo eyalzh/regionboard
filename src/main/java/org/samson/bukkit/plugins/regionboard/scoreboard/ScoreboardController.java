@@ -1,6 +1,8 @@
 package org.samson.bukkit.plugins.regionboard.scoreboard;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -97,6 +99,51 @@ public class ScoreboardController {
 			}
 			
 		}
+		
+	}
+
+	public void removeScoreboardForRegion(String regionId) {
+		
+		if (regionalScoreboardMap.containsKey(regionId)) {
+			Scoreboard scoreboard = regionalScoreboardMap.get(regionId);
+			scoreboard.clearSlot(DisplaySlot.SIDEBAR);
+			regionalScoreboardMap.remove(regionId);
+		}
+		
+	}
+
+	public List<String> getTopEntries(String regionId) {
+		
+		List<String> scores = new ArrayList<String>();
+		
+		if (regionalScoreboardMap.containsKey(regionId)) {
+			
+			Scoreboard scoreboard = regionalScoreboardMap.get(regionId);
+			
+			Objective objective = scoreboard.getObjective(DisplaySlot.SIDEBAR);
+			
+			Set<String> entries = scoreboard.getEntries();
+			
+			int maxScore = 0;
+			
+			for (String entry : entries) {
+				
+				int score = objective.getScore(entry).getScore();
+				
+				if (score == maxScore) {
+					scores.add(entry);
+				}
+				else if (score > maxScore) {
+					maxScore = score;
+					scores.clear();
+					scores.add(entry);
+				}
+				
+			}
+			
+		}
+		
+		return scores;
 		
 	}
 

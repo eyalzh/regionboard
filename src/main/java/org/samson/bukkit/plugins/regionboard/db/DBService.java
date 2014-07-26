@@ -4,8 +4,8 @@ import java.util.Set;
 
 public interface DBService {
 
-	public String[] get(String key);
-	public void set(String key, String[] value);
+	public String get(String key);
+	public void set(String key, String value);
 	public void remove(String key);
 	
 	public void close();

@@ -28,33 +28,33 @@ public class MapDBServiceTest {
 	@Test
 	public void SingleSet_Get_ReturnsCorrectValue() {
 		
-		mapDB.set("key", new String[]{"value"});
+		mapDB.set("key", "value");
 		
-		String[] value = mapDB.get("key");
+		String value = mapDB.get("key");
 		
-		assertEquals("value", value[0]);
+		assertEquals("value", value);
 		
 	}
 
 	@Test
 	public void MultipleSet_Get_ReturnsCorrectValue() {
 
-		mapDB.set("key1", new String[]{"value1"});
-		mapDB.set("key2", new String[]{"value2"});
-		mapDB.set("key3", new String[]{"value3"});
+		mapDB.set("key1", "value1");
+		mapDB.set("key2", "value2");
+		mapDB.set("key3", "value3");
 		
-		String[] value = mapDB.get("key2");
+		String value = mapDB.get("key2");
 		
-		assertEquals("value2", value[0]);
+		assertEquals("value2", value);
 		
 	}
 	
 	@Test
 	public void MultipleSet_GetAll_ReturnsAllValues() {
 
-		mapDB.set("key1", new String[]{"value1"});
-		mapDB.set("key2", new String[]{"value2"});
-		mapDB.set("key3", new String[]{"value3"});
+		mapDB.set("key1", "value1");
+		mapDB.set("key2", "value2");
+		mapDB.set("key3", "value3");
 		
 		Set<String> values = mapDB.getAll();
 		

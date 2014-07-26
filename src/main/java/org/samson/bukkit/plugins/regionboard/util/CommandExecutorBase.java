@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -46,9 +47,19 @@ public abstract class CommandExecutorBase implements CommandExecutor {
     		if (subCommandsMap.containsKey(subCommand)) {
     			Method method = subCommandsMap.get(subCommand);
     			try {
+    				
     				String[] subCommandArgs = Arrays.copyOfRange(args, 1, args.length);
-					method.invoke(this, sender, subCommandArgs);
+    				
+    				SubCommand annotation = method.getAnnotation(SubCommand.class);
+    				
+    				if (subCommandArgs.length < annotation.numberOfArgs()) {
+    					sender.sendMessage(ChatColor.RED + annotation.usageMessage());
+    				} else {
+    					method.invoke(this, sender, subCommandArgs);
+    				}
+					
 					return true;
+					
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
