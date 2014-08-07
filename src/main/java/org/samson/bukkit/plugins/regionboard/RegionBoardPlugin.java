@@ -133,8 +133,8 @@ public class RegionBoardPlugin extends JavaPlugin {
 			}
 		
 			AutoResetJob autoResetJob = new AutoResetJob(this, region);
-			int period = 20 * region.getAutoResetTime();
-			autoResetJob.runTaskTimer(this, period, period);
+			final int tickingPeriod = 20; // 20 ticks
+			autoResetJob.runTaskTimer(this, 0, tickingPeriod);
 			
 			regionJobs.put(region.getRegionId(), autoResetJob);
 			

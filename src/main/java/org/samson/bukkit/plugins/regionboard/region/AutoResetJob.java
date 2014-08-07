@@ -12,49 +12,75 @@ public class AutoResetJob extends BukkitRunnable {
 
 	final private Region region;
 	final private RegionBoardPlugin plugin;
+	
+	private int remainingTicks;
 
 	public AutoResetJob(RegionBoardPlugin plugin, Region region) {
 		
 		this.plugin = plugin;
 		this.region = region;
+		
+		this.remainingTicks = region.getAutoResetTime();
+		
 	}
 	
 	@Override
 	public void run() {
 		
+		if (remainingTicks == 0) {
+			fireAutoResetEvent();
+			remainingTicks = region.getAutoResetTime();
+		} else {
+			updateScoreboardTimer();
+			remainingTicks--;
+		}
+		
+	}
+
+	private void updateScoreboardTimer() {
+		ScoreboardController scoreboardController = plugin.getScoreboardController();
+		scoreboardController.updateScoreboardTimer(region.getRegionId(), remainingTicks);
+		
+	}
+
+	@SuppressWarnings("deprecation")
+	private void fireAutoResetEvent() {
 		// Get the winner(s):
 		ScoreboardController scoreboardController = plugin.getScoreboardController();
 		
 		int xpPoints = region.getXpPoints();
+		
+		if (xpPoints == 0) {
+			return;
+		}
+		
 		List<String> topEntries = scoreboardController.getTopEntries(region.getRegionId());
 		
 		for (String entry : topEntries) {
-			
-			@SuppressWarnings("deprecation")
+
 			Player player = plugin.getServer().getPlayer(entry);
 
 			scoreboardController.resetScoreboard(region.getRegionId());
 			
 			if (player != null && player.isOnline()) {
-				
-				if (xpPoints > 0) {
-					
-					String winMsg = player.getDisplayName()
-							+ ChatColor.LIGHT_PURPLE
-							+ " wins " + xpPoints + " XP points (" 
-							+ ScoreboardController.getFormattedScoreboardDisplayName(region.getScoreboardDisplayName())
-							+ ChatColor.LIGHT_PURPLE
-							+ ")";
-					
-					plugin.getServer().broadcast(winMsg, "regionboard.seewinmsg");
-					
-					player.giveExp(xpPoints);
-					
-				}
-				
+				player.giveExp(xpPoints);					
+				announceAutoResetWinner(xpPoints, player);
 			}
 			
-		}
+		}		
+		
+	}
+
+	private void announceAutoResetWinner(int xpPoints, Player player) {
+		
+		String winMsg = String.format("%s &5wins %d XP points (%s&5)!",
+				player.getDisplayName(),
+				xpPoints,
+				ScoreboardController.getFormattedScoreboardDisplayName(region.getScoreboardDisplayName()));
+
+		winMsg = ChatColor.translateAlternateColorCodes('&', winMsg);
+		
+		plugin.getServer().broadcast(winMsg, "regionboard.seewinmsg");
 		
 	}
 

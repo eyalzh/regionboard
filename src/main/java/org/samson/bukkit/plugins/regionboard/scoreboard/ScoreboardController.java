@@ -18,6 +18,7 @@ import org.samson.bukkit.plugins.regionboard.region.Region;
 
 public class ScoreboardController {
 	
+	private static final String TIMER_ENTRY = "&6Time Left";
 	private Map<String, Scoreboard> regionalScoreboardMap = new HashMap<String, Scoreboard>();
 	
 	public void displayObjectiveForPlayer(Player player, String regionId, String displayName) {
@@ -150,5 +151,18 @@ public class ScoreboardController {
 		String formattedDisplayName = StringUtils.replaceChars(displayName, '_', ' ');
 		return ChatColor.translateAlternateColorCodes('&', formattedDisplayName);
 	}
+
+	public void updateScoreboardTimer(String regionId, int remainingTicks) {
+		Scoreboard scoreboard = getOrCreateRegionalScoreboard(regionId);
+		Objective objective = scoreboard.getObjective(DisplaySlot.SIDEBAR);
+		if (objective != null) {
+			objective.getScore(getTimerEntry()).setScore(-1 * remainingTicks);
+		}
+	}
+	
+	private static String getTimerEntry() {
+		return ChatColor.translateAlternateColorCodes('&', TIMER_ENTRY);
+	}
+	
 
 }
