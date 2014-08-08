@@ -2,10 +2,12 @@ package org.samson.bukkit.plugins.regionboard.region;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.samson.bukkit.plugins.regionboard.RegionBoardPlugin;
+import org.samson.bukkit.plugins.regionboard.event.RegionAutoResetEvent;
 import org.samson.bukkit.plugins.regionboard.scoreboard.ScoreboardController;
 
 public class AutoResetJob extends BukkitRunnable {
@@ -28,11 +30,21 @@ public class AutoResetJob extends BukkitRunnable {
 	public void run() {
 		
 		if (remainingTicks == 0) {
-			fireAutoResetEvent();
-			remainingTicks = region.getAutoResetTime();
+			
+			RegionAutoResetEvent resetEvent = new RegionAutoResetEvent(region);
+			Bukkit.getServer().getPluginManager().callEvent(resetEvent);
+			
+			if (! resetEvent.isCancelled()) {
+				fireAutoResetEvent();
+			}
+			
+			remainingTicks = region.getAutoResetTime();			
+			
 		} else {
+			
 			updateScoreboardTimer();
 			remainingTicks--;
+			
 		}
 		
 	}

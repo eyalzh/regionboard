@@ -118,5 +118,4 @@ public class RegionBoardEventListener implements Listener {
 		
 	}
 	
-	
 }
