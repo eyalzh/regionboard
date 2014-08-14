@@ -4,7 +4,7 @@
 	<groupId>org.samson.bukkit.plugins.regionboard</groupId>
 	<artifactId>RegionBoard</artifactId>
 	<packaging>jar</packaging>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.2</version>
 	<name>RegionBoard</name>
 	<url>http://maven.apache.org</url>
 	<properties>
@@ -63,10 +63,19 @@
 		    <groupId>com.google.code.gson</groupId>
 		    <artifactId>gson</artifactId>
 		    <version>2.2.4</version>
+            <scope>compile</scope>
 		</dependency>
 		
 	</dependencies>
+	
 	<build>
+	
+		<directory>target</directory>
+		<outputDirectory>target/classes</outputDirectory>
+		<testOutputDirectory>target/test-classes</testOutputDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>	
+	
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -77,25 +86,33 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-						
+			
 			<plugin>
-			    <artifactId>maven-assembly-plugin</artifactId>
-			    <version>2.2.1</version>
-			    <configuration>
-			        <descriptorRefs>
-			            <descriptorRef>jar-with-dependencies</descriptorRef>
-			        </descriptorRefs>
-			    </configuration>
-			    <executions>
-			        <execution>
-			            <id>make-assembly</id> 
-			            <phase>package</phase>
-			            <goals>
-			                <goal>single</goal>
-			            </goals>
-			        </execution>
-			    </executions>
-			</plugin>			
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-shade-plugin</artifactId>
+		        <version>2.3</version>
+		        <executions>
+		          <execution>
+		            <phase>package</phase>
+		            <goals>
+		              <goal>shade</goal>
+		            </goals>
+		            <configuration>
+		              <minimizeJar>true</minimizeJar>
+		              <relocations>
+		                <relocation>
+		                  <pattern>org.mapdb</pattern>
+		                  <shadedPattern>org.samson.bukkit.plugins.regionboard.libs.mapdb</shadedPattern>
+		                </relocation>
+                        <relocation>
+                          <pattern>com.google.gson</pattern>
+                          <shadedPattern>org.samson.bukkit.plugins.regionboard.libs.gson</shadedPattern>
+                        </relocation>
+		              </relocations>
+		            </configuration>
+		          </execution>
+		        </executions>
+		      </plugin>			
 						
 		</plugins>
 		
@@ -118,4 +135,5 @@
           <url>http://maven.sk89q.com/repo/</url>
         </repository>
 	</repositories>
+	
 </project>

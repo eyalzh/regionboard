@@ -3,7 +3,9 @@ package org.samson.bukkit.plugins.regionboard.db;
 import java.io.File;
 import java.util.Set;
 
-import org.mapdb.*;
+import org.mapdb.DB;
+import org.mapdb.DBMaker;
+import org.mapdb.HTreeMap;
 
 public class MapDBService implements DBService {
 	
